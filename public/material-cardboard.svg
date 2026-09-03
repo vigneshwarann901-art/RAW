@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff7ed"/><stop offset="1" stop-color="#fed7aa"/></linearGradient><linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a16207"/><stop offset="1" stop-color="#78350f"/></linearGradient></defs>
+<rect width="800" height="600" fill="url(#bg)"/>
+<g transform="translate(120 150) rotate(-7)">
+<path d="M0 0h470l95 80-95 300H0l-85-80Z" fill="#d6d3d1" stroke="#92400e" stroke-width="7"/>
+<path d="M30 25h410l68 58-58 245H30Z" fill="#f5deb4"/>
+<path d="M-5 85l85 60h410" stroke="#b45309" stroke-width="14" fill="none" opacity=".65"/>
+<path d="M-5 180l85 60h410" stroke="#b45309" stroke-width="14" fill="none" opacity=".65"/>
+<path d="M-5 275l85 60h410" stroke="#b45309" stroke-width="14" fill="none" opacity=".65"/>
+</g>
+<text x="50" y="68" fill="#9a3412" font-family="Arial" font-size="22" font-weight="800" letter-spacing="4">RAW MATERIAL</text>
+<text x="50" y="110" fill="#451a03" font-family="Arial" font-size="42" font-weight="900">Corrugated Cardboard</text>
+<text x="50" y="148" fill="#7c2d12" font-family="Arial" font-size="18">Clean • reusable • recyclable</text>
+</svg>

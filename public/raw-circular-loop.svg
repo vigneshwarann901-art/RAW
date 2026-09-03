@@ -1,0 +1,32 @@
+<svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="bg2" x1="50" y1="40" x2="850" y2="480" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#ECFDF5"/>
+    <stop offset="1" stop-color="#F8FAFC"/>
+  </linearGradient>
+</defs>
+<rect width="900" height="520" rx="40" fill="url(#bg2)"/>
+<circle cx="450" cy="260" r="154" stroke="#99F6E4" stroke-width="34"/>
+<path d="M450 103c82 0 148 42 180 109" stroke="#0F766E" stroke-width="14" stroke-linecap="round"/>
+<path d="M622 191l-5 68-56-34" fill="#0F766E"/>
+<path d="M602 383c-43 57-110 88-184 88" stroke="#14B8A6" stroke-width="14" stroke-linecap="round"/>
+<path d="M432 471l42-53 23 62" fill="#14B8A6"/>
+<path d="M296 356c-38-58-46-132-18-197" stroke="#115E59" stroke-width="14" stroke-linecap="round"/>
+<path d="M272 158l66 12-38 55" fill="#115E59"/>
+<circle cx="450" cy="260" r="84" fill="#0F172A"/>
+<path d="M415 255c19-44 50-44 70 0-20 44-51 44-70 0Z" stroke="#5EEAD4" stroke-width="8" fill="none"/>
+<circle cx="450" cy="255" r="13" fill="#5EEAD4"/>
+<text x="450" y="332" text-anchor="middle" font-family="Inter, Arial" font-size="24" font-weight="900" fill="#FFFFFF">RAW</text>
+<text x="120" y="118" font-family="Inter, Arial" font-size="16" font-weight="800" fill="#0F766E">1 · DISCOVER</text>
+<text x="120" y="148" font-family="Inter, Arial" font-size="24" font-weight="900" fill="#0F172A">Find surplus</text>
+<text x="120" y="176" font-family="Inter, Arial" font-size="13" fill="#64748B">See what's available nearby.</text>
+<text x="610" y="118" font-family="Inter, Arial" font-size="16" font-weight="800" fill="#0F766E">2 · MATCH</text>
+<text x="610" y="148" font-family="Inter, Arial" font-size="24" font-weight="900" fill="#0F172A">Rank demand</text>
+<text x="610" y="176" font-family="Inter, Arial" font-size="13" fill="#64748B">Need + distance + trust + price.</text>
+<text x="130" y="398" font-family="Inter, Arial" font-size="16" font-weight="800" fill="#0F766E">3 · REDISTRIBUTE</text>
+<text x="130" y="428" font-family="Inter, Arial" font-size="24" font-weight="900" fill="#0F172A">Keep it moving</text>
+<text x="130" y="456" font-family="Inter, Arial" font-size="13" fill="#64748B">Offer, exchange, confirm, repeat.</text>
+<text x="610" y="398" font-family="Inter, Arial" font-size="16" font-weight="800" fill="#0F766E">4 · MEASURE</text>
+<text x="610" y="428" font-family="Inter, Arial" font-size="24" font-weight="900" fill="#0F172A">Track impact</text>
+<text x="610" y="456" font-family="Inter, Arial" font-size="13" fill="#64748B">Value recovered and reuse cycles.</text>
+</svg>
