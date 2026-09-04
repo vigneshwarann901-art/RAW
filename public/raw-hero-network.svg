@@ -1,0 +1,74 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="bg" x1="90" y1="60" x2="1120" y2="820" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#0F172A"/>
+    <stop offset="1" stop-color="#134E4A"/>
+  </linearGradient>
+  <linearGradient id="card" x1="120" y1="120" x2="1040" y2="780" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#FFFFFF" stop-opacity="0.98"/>
+    <stop offset="1" stop-color="#F0FDFA"/>
+  </linearGradient>
+  <filter id="shadow" x="0" y="0" width="1200" height="900" filterUnits="userSpaceOnUse">
+    <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#020617" flood-opacity="0.28"/>
+  </filter>
+  <filter id="glow" x="0" y="0" width="1200" height="900" filterUnits="userSpaceOnUse">
+    <feGaussianBlur stdDeviation="28"/>
+  </filter>
+</defs>
+<rect width="1200" height="900" rx="56" fill="url(#bg)"/>
+<circle cx="1020" cy="120" r="150" fill="#2DD4BF" fill-opacity="0.16" filter="url(#glow)"/>
+<circle cx="160" cy="770" r="170" fill="#14B8A6" fill-opacity="0.14" filter="url(#glow)"/>
+<g filter="url(#shadow)">
+  <rect x="86" y="92" width="1028" height="716" rx="38" fill="url(#card)"/>
+  <rect x="120" y="128" width="960" height="70" rx="18" fill="#F8FAFC"/>
+  <circle cx="158" cy="163" r="11" fill="#CBD5E1"/>
+  <circle cx="192" cy="163" r="11" fill="#CBD5E1"/>
+  <circle cx="226" cy="163" r="11" fill="#CBD5E1"/>
+  <rect x="278" y="145" width="460" height="36" rx="18" fill="#E2E8F0"/>
+  <rect x="120" y="224" width="592" height="534" rx="28" fill="#F8FAFC"/>
+  <rect x="744" y="224" width="336" height="248" rx="28" fill="#0F172A"/>
+  <rect x="744" y="496" width="336" height="262" rx="28" fill="#ECFDF5"/>
+</g>
+<text x="160" y="278" font-family="Inter, Arial" font-size="18" font-weight="700" fill="#0F766E">RAW MATCH</text>
+<text x="160" y="322" font-family="Inter, Arial" font-size="38" font-weight="800" fill="#0F172A">Copper Wire</text>
+<text x="160" y="354" font-family="Inter, Arial" font-size="16" fill="#64748B">Reusable material · 100 kg · Guindy</text>
+
+<g>
+  <rect x="160" y="402" width="512" height="132" rx="24" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <circle cx="214" cy="468" r="34" fill="#CCFBF1"/>
+  <path d="M196 468c13-26 31-26 44 0-13 26-31 26-44 0Z" stroke="#0F766E" stroke-width="4" fill="none"/>
+  <circle cx="214" cy="468" r="7" fill="#0F766E"/>
+  <text x="266" y="452" font-family="Inter, Arial" font-size="20" font-weight="800" fill="#0F172A">Sri Metals</text>
+  <text x="266" y="480" font-family="Inter, Arial" font-size="15" fill="#64748B">100 kg · ₹605/kg · 2.8 km</text>
+  <rect x="544" y="435" width="102" height="34" rx="17" fill="#DCFCE7"/>
+  <text x="595" y="457" text-anchor="middle" font-family="Inter, Arial" font-size="13" font-weight="800" fill="#166534">96% MATCH</text>
+</g>
+
+<g>
+  <rect x="160" y="566" width="232" height="146" rx="24" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <rect x="416" y="566" width="256" height="146" rx="24" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="184" y="602" font-family="Inter, Arial" font-size="13" font-weight="700" fill="#0F766E">CIRCULARITY</text>
+  <text x="184" y="642" font-family="Inter, Arial" font-size="34" font-weight="900" fill="#0F172A">93%</text>
+  <text x="184" y="674" font-family="Inter, Arial" font-size="13" fill="#64748B">Best path: Direct reuse</text>
+  <text x="440" y="602" font-family="Inter, Arial" font-size="13" font-weight="700" fill="#0F766E">VALUE RECOVERED</text>
+  <text x="440" y="642" font-family="Inter, Arial" font-size="34" font-weight="900" fill="#0F172A">₹60.5k</text>
+  <text x="440" y="674" font-family="Inter, Arial" font-size="13" fill="#64748B">Estimated inventory value</text>
+</g>
+
+<text x="784" y="268" font-family="Inter, Arial" font-size="14" font-weight="800" fill="#5EEAD4">LOCAL NETWORK</text>
+<text x="784" y="304" font-family="Inter, Arial" font-size="25" font-weight="800" fill="#FFFFFF">Surplus → Demand</text>
+<path d="M812 366 C862 316 956 318 1008 368" stroke="#2DD4BF" stroke-width="5" stroke-linecap="round"/>
+<path d="M1008 368 C954 418 860 418 812 368" stroke="#5EEAD4" stroke-width="5" stroke-linecap="round" stroke-dasharray="10 12"/>
+<circle cx="812" cy="368" r="24" fill="#115E59" stroke="#5EEAD4" stroke-width="4"/>
+<circle cx="1008" cy="368" r="24" fill="#115E59" stroke="#5EEAD4" stroke-width="4"/>
+<text x="812" y="374" text-anchor="middle" font-family="Inter, Arial" font-size="11" font-weight="900" fill="#FFFFFF">RAW</text>
+<text x="1008" y="374" text-anchor="middle" font-family="Inter, Arial" font-size="11" font-weight="900" fill="#FFFFFF">NEED</text>
+<text x="784" y="432" font-family="Inter, Arial" font-size="13" fill="#CBD5E1">Need score · distance · price · trust</text>
+
+<text x="780" y="544" font-family="Inter, Arial" font-size="14" font-weight="800" fill="#0F766E">IMPACT LEDGER</text>
+<text x="780" y="586" font-family="Inter, Arial" font-size="30" font-weight="900" fill="#0F172A">1.24 t</text>
+<text x="780" y="612" font-family="Inter, Arial" font-size="14" fill="#64748B">material kept in circulation</text>
+<text x="780" y="660" font-family="Inter, Arial" font-size="14" fill="#334155">36 successful exchanges</text>
+<text x="780" y="688" font-family="Inter, Arial" font-size="14" fill="#334155">57 reuse cycles</text>
+<text x="780" y="716" font-family="Inter, Arial" font-size="14" fill="#334155">312 kg estimated waste avoided</text>
+</svg>

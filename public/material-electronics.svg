@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0f172a"/><stop offset="1" stop-color="#0f766e"/></linearGradient><linearGradient id="board" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#166534"/><stop offset="1" stop-color="#14532d"/></linearGradient></defs>
+<rect width="800" height="600" fill="url(#bg)"/>
+<g transform="translate(170 135) rotate(-8)"><rect width="470" height="330" rx="26" fill="url(#board)" stroke="#34d399" stroke-width="8"/><g stroke="#a7f3d0" stroke-width="6" opacity=".8"><path d="M30 70h150v70h100v-40h150"/><path d="M40 260h100v-70h120v75h160"/><path d="M250 30v70"/><path d="M370 220v70"/></g><g fill="#fbbf24"><circle cx="90" cy="70" r="15"/><circle cx="240" cy="135" r="18"/><circle cx="390" cy="95" r="12"/><circle cx="140" cy="250" r="14"/><circle cx="350" cy="255" r="16"/></g><g fill="#111827" stroke="#94a3b8" stroke-width="4"><rect x="62" y="110" width="74" height="42" rx="8"/><rect x="310" y="160" width="90" height="54" rx="8"/></g></g>
+<text x="50" y="70" fill="#5eead4" font-family="Arial" font-size="22" font-weight="800" letter-spacing="4">RAW MATERIAL</text>
+<text x="50" y="110" fill="#fff" font-family="Arial" font-size="42" font-weight="900">Electronic Components</text>
+<text x="50" y="148" fill="#cbd5e1" font-family="Arial" font-size="18">Recover • repair • reuse</text>
+</svg>

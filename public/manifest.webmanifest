@@ -1,0 +1,9 @@
+{
+  "name": "RAW — Reusable & Recoverable Network",
+  "short_name": "RAW",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "description": "A local marketplace for reusable and recoverable materials."
+}

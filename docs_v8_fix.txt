@@ -1,0 +1,9 @@
+RAW MVP v8 build fixes
+
+- Fixed JSX syntax in src/pages/seeker/Marketplace.tsx.
+- Fixed missing AppShell close tag in src/pages/donor/MyListings.tsx.
+- Fixed subscribeToRawRealtime call in src/store/RawStore.tsx to use the handlers object.
+
+Verification on the development machine:
+  npm install
+  npm run build

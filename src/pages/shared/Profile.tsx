@@ -1,0 +1,12 @@
+import { BadgeCheck, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import AppShell from '../../components/layout/AppShell';
+import Badge from '../../components/common/Badge';
+import { useRaw } from '../../store/RawStore';
+
+export default function Profile() {
+  const { currentUser } = useRaw();
+  return <AppShell><div className="mx-auto max-w-4xl space-y-6">
+    <div><p className="text-sm font-semibold text-teal-700">Account</p><h1 className="mt-1 text-3xl font-black tracking-tight">Profile & trust</h1><p className="mt-2 text-sm text-slate-500">Build trust by keeping your identity and transaction history transparent.</p></div>
+    <section className="rounded-2xl border border-slate-200 bg-white p-6"><div className="flex flex-col gap-5 sm:flex-row sm:items-center"><div className="grid h-16 w-16 place-items-center rounded-2xl bg-slate-950 text-xl font-black text-white">VW</div><div className="flex-1"><div className="flex items-center gap-2"><h2 className="text-2xl font-black">{currentUser.name}</h2><Badge tone="success"><BadgeCheck className="mr-1 h-3.5 w-3.5"/> Verified</Badge></div><p className="mt-1 text-sm text-slate-500">{currentUser.role} · {currentUser.successfulTransactions} successful transactions</p></div><div className="rounded-2xl bg-emerald-50 px-5 py-4 text-center"><div className="text-3xl font-black text-emerald-700">{currentUser.trustScore}</div><div className="text-xs font-semibold text-emerald-700">TRUST SCORE</div></div></div><div className="mt-7 grid gap-3 sm:grid-cols-2"><div className="rounded-xl bg-slate-50 p-4"><div className="text-xs text-slate-400">Email</div><div className="mt-1 flex items-center gap-2 text-sm font-semibold"><Mail className="h-4 w-4 text-teal-600"/>{currentUser.email}</div></div><div className="rounded-xl bg-slate-50 p-4"><div className="text-xs text-slate-400">Phone</div><div className="mt-1 flex items-center gap-2 text-sm font-semibold"><Phone className="h-4 w-4 text-teal-600"/>{currentUser.phone}</div></div><div className="rounded-xl bg-slate-50 p-4"><div className="text-xs text-slate-400">Location</div><div className="mt-1 flex items-center gap-2 text-sm font-semibold"><MapPin className="h-4 w-4 text-teal-600"/>{currentUser.location}</div></div><div className="rounded-xl bg-slate-50 p-4"><div className="text-xs text-slate-400">Verification</div><div className="mt-1 flex items-center gap-2 text-sm font-semibold"><ShieldCheck className="h-4 w-4 text-emerald-600"/> Phone · Email</div></div></div></section>
+  </div></AppShell>;
+}

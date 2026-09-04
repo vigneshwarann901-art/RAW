@@ -1,0 +1,5 @@
+RAW MVP v5 - persistence-ready CRUD milestone.
+- Supabase-aware listings/requirements/offers/transactions loading.
+- Supabase insert/update persistence with localStorage fallback.
+- Fixed listing persistence bug.
+- Added RLS policies for offer updates and transaction/impact inserts.
