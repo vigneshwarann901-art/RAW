@@ -1,9 +1,32 @@
 import { Check, MessageSquare, MoreHorizontal, UserCheck, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import AppShell from '../../components/layout/AppShell';
 import Badge from '../../components/common/Badge';
 import { useRaw } from '../../store/RawStore';
+import { useAuth } from '../../auth/AuthProvider';
+import { getProfileById } from '../../services/data/repository';
+import type { User } from '../../types';
 
 export default function Offers() {
   const { offers, listings, updateOffer } = useRaw();
-  return <AppShell><div><p className="text-sm font-semibold text-teal-700">Commercial workflow</p><h1 className="mt-1 text-3xl font-black tracking-tight">Offers</h1><p className="mt-2 text-sm text-slate-500">Negotiate with seekers without leaving RAW.</p><div className="mt-6 space-y-4">{offers.map(o => { const listing = listings.find(x => x.id === o.listingId); return <div key={o.id} className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex flex-col gap-4 sm:flex-row sm:items-start"><div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-100"><UserCheck className="h-5 w-5 text-slate-600"/></div><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-bold">GreenLoop Foundation</h3><Badge tone={o.status === 'PENDING' ? 'warning' : o.status === 'ACCEPTED' ? 'success' : 'brand'}>{o.status}</Badge></div><p className="mt-1 text-sm text-slate-500">{o.quantity} {listing?.unit ?? 'units'} · {listing?.material ?? 'RAW'}</p><div className="mt-3 rounded-xl bg-slate-50 p-4 text-sm"><div className="flex justify-between"><span className="text-slate-500">Offer</span><span className="font-bold">₹{o.price.toLocaleString()}</span></div><p className="mt-2 text-slate-600">{o.message}</p></div></div><div className="flex gap-2 sm:flex-col">{o.status==='PENDING' && <><button onClick={() => updateOffer(o.id,'ACCEPTED')} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white"><Check className="h-4 w-4"/> Accept</button><button onClick={() => updateOffer(o.id,'REJECTED')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold"><X className="h-4 w-4"/> Reject</button></>}<button className="rounded-xl border border-slate-200 p-2.5"><MessageSquare className="h-4 w-4"/></button><button className="rounded-xl border border-slate-200 p-2.5"><MoreHorizontal className="h-4 w-4"/></button></div></div></div>})}</div></div></AppShell>;
+  const { mode } = useAuth();
+  const [seekers, setSeekers] = useState<Record<string, User>>({});
+
+  const seekerIds = useMemo(() => Array.from(new Set(offers.map(o => o.seekerId))), [offers]);
+
+  useEffect(() => {
+    if (mode !== 'supabase' || !seekerIds.length) return;
+    let active = true;
+    void Promise.all(seekerIds.map((seekerId) => getProfileById(seekerId))).then((results) => {
+      if (!active) return;
+      setSeekers((prev) => {
+        const next = { ...prev };
+        results.forEach((result, index) => { if (result.data) next[seekerIds[index]] = result.data; });
+        return next;
+      });
+    });
+    return () => { active = false; };
+  }, [mode, seekerIds]);
+
+  return <AppShell><div><p className="text-sm font-semibold text-teal-700">Commercial workflow</p><h1 className="mt-1 text-3xl font-black tracking-tight">Offers</h1><p className="mt-2 text-sm text-slate-500">Negotiate with seekers without leaving RAW.</p><div className="mt-6 space-y-4">{offers.map(o => { const listing = listings.find(x => x.id === o.listingId); const seeker = seekers[o.seekerId]; return <div key={o.id} className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex flex-col gap-4 sm:flex-row sm:items-start"><div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-100"><UserCheck className="h-5 w-5 text-slate-600"/></div><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-bold">{seeker?.name ?? 'RAW Seeker'}</h3><Badge tone={o.status === 'PENDING' ? 'warning' : o.status === 'ACCEPTED' ? 'success' : 'brand'}>{o.status}</Badge></div><p className="mt-1 text-sm text-slate-500">{o.quantity} {listing?.unit ?? 'units'} · {listing?.material ?? 'RAW'}</p><div className="mt-3 rounded-xl bg-slate-50 p-4 text-sm"><div className="flex justify-between"><span className="text-slate-500">Offer</span><span className="font-bold">₹{o.price.toLocaleString()}</span></div><p className="mt-2 text-slate-600">{o.message}</p></div></div><div className="flex gap-2 sm:flex-col">{o.status==='PENDING' && <><button onClick={() => updateOffer(o.id,'ACCEPTED')} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white"><Check className="h-4 w-4"/> Accept</button><button onClick={() => updateOffer(o.id,'REJECTED')} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold"><X className="h-4 w-4"/> Reject</button></>}<button className="rounded-xl border border-slate-200 p-2.5"><MessageSquare className="h-4 w-4"/></button><button className="rounded-xl border border-slate-200 p-2.5"><MoreHorizontal className="h-4 w-4"/></button></div></div></div>})}</div></div></AppShell>;
 }

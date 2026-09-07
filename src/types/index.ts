@@ -57,6 +57,7 @@ export interface ResourceListing {
   mode: ExchangeMode;
   status: ListingStatus;
   image: string;
+  images?: string[];
   trustScore: number;
   circularityScore: number;
   urgencyScore: number;
@@ -124,6 +125,16 @@ export interface Receipt {
   id: string;
   transactionId: string;
   issuedAt: string;
+}
+
+export interface Rating {
+  id: string;
+  transactionId: string;
+  fromUser: string;
+  toUser: string;
+  score: number;
+  comment?: string;
+  createdAt: string;
 }
 
 export interface ImpactRecord {

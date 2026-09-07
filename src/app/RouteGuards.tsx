@@ -9,7 +9,7 @@ export function RequireAuth({
   children:ReactNode;
 }){
 
-  const { session, loading } = useAuth();
+  const { session, loading, mode } = useAuth();
 
   const location = useLocation();
 
@@ -37,8 +37,21 @@ export function RequireAuth({
 
 
 
-  // TEMPORARY DEMO MODE
-  // Allows frontend OTP demo login
+  // When Supabase is configured, a real session is required.
+  // (Demo mode, used only when Supabase env vars are absent, has no session concept.)
+  if(mode === "supabase" && !session){
+
+    return (
+
+      <Navigate
+        to="/auth/login"
+        replace
+        state={{ from: location }}
+      />
+
+    );
+
+  }
 
   return <>{children}</>;
 

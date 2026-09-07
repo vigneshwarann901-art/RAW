@@ -21,6 +21,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<ApiResult<T
 export function health() { return request<{ success: boolean; service: string; message: string; supabaseConfigured: boolean }>('/health'); }
 export function getProfile() { return request<{ success: boolean; profile: Record<string, unknown> }>('/me'); }
 export function updateProfile(data: Record<string, unknown>) { return request<{ success: boolean; profile: Record<string, unknown> }>('/profile', { method: 'PATCH', body: JSON.stringify(data) }); }
+export function getApiProfileById(id: string) { return request<{ success: boolean; profile: Record<string, unknown> }>(`/profiles/${id}`); }
+export function uploadApiImage(data: { fileName: string; contentType: string; data: string }) { return request<{ success: boolean; url: string; path: string }>('/uploads', { method: 'POST', body: JSON.stringify(data) }); }
 export function getApiListings() { return request<{ success: boolean; listings: Record<string, unknown>[] }>('/listings'); }
 export function createApiListing(data: Record<string, unknown>) { return request<{ success: boolean; listing: Record<string, unknown> }>('/listings', { method: 'POST', body: JSON.stringify(data) }); }
 export function getApiRequirements() { return request<{ success: boolean; requirements: Record<string, unknown>[] }>('/requirements'); }
@@ -34,3 +36,5 @@ export function updateApiTransaction(id: string, status: string) { return reques
 export function getApiNotifications() { return request<{ success: boolean; notifications: Record<string, unknown>[] }>('/notifications'); }
 export function markApiNotificationRead(id: string) { return request<{ success: boolean; notification: Record<string, unknown> }>(`/notifications/${id}`, { method: 'PATCH' }); }
 export function getApiStats() { return request<{ success: boolean; stats: Record<string, unknown> }>('/stats'); }
+export function getApiRatingsForTransaction(transactionId: string) { return request<{ success: boolean; ratings: Record<string, unknown>[] }>(`/transactions/${transactionId}/ratings`); }
+export function createApiRating(data: Record<string, unknown>) { return request<{ success: boolean; rating: Record<string, unknown> }>('/ratings', { method: 'POST', body: JSON.stringify(data) }); }

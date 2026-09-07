@@ -114,6 +114,9 @@ function haversineKm(lat1, lon1, lat2, lon2) {
 
 function clamp(value) { return Math.max(0, Math.min(100, Math.round(value))); }
 
+const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+
 function dateScore(target, radiusHours = 48) {
   const timestamp = Date.parse(target || '');
   if (!Number.isFinite(timestamp)) return 70;
@@ -225,6 +228,37 @@ async function routes(req, res) {
       return json(res, 200, { success: true, profile: data });
     }
 
+    if (req.method === 'GET' && path.startsWith('/api/profiles/')) {
+      const id = path.split('/').pop();
+      const { data, error } = await client
+        .from('profiles')
+        .select('id,name,email,phone,role,location,trust_score,verified_phone,verified_email,verified_business,successful_transactions,response_rate')
+        .eq('id', id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) return json(res, 404, { success: false, message: 'Profile not found.' });
+      return json(res, 200, { success: true, profile: data });
+    }
+
+    if (req.method === 'POST' && path === '/api/uploads') {
+      const input = await body(req);
+      const contentType = String(input.contentType || '');
+      if (!ALLOWED_IMAGE_TYPES.has(contentType)) {
+        return json(res, 400, { success: false, message: 'Only JPG, PNG or WEBP images are supported.' });
+      }
+      if (!input.data) return json(res, 400, { success: false, message: 'No image data provided.' });
+      const buffer = Buffer.from(String(input.data), 'base64');
+      if (!buffer.length || buffer.length > MAX_IMAGE_BYTES) {
+        return json(res, 400, { success: false, message: 'Image must be 10 MB or smaller.' });
+      }
+      const safeName = String(input.fileName || 'upload').replace(/[^a-zA-Z0-9.\-_]/g, '_').slice(-80);
+      const path = `${user.id}/${Date.now()}-${safeName}`;
+      const { error: uploadError } = await client.storage.from('raw-images').upload(path, buffer, { contentType, upsert: false });
+      if (uploadError) throw uploadError;
+      const { data: pub } = client.storage.from('raw-images').getPublicUrl(path);
+      return json(res, 201, { success: true, url: pub.publicUrl, path });
+    }
+
     if (req.method === 'GET' && path === '/api/listings') {
       const { data, error } = await client.from('listings').select('*').or(`status.eq.ACTIVE,donor_id.eq.${user.id}`).order('created_at', { ascending: false });
       if (error) throw error;
@@ -250,6 +284,7 @@ async function routes(req, res) {
         available_until: input.availableUntil || new Date(Date.now() + 86400000).toISOString(),
         mode: ['SELL', 'DONATE', 'SWAP'].includes(input.mode) ? input.mode : 'SELL',
         image_url: String(input.image || input.imageUrl || ''),
+        images: Array.isArray(input.images) ? input.images.map((x) => String(x)).slice(0, 8) : [],
         trust_score: Number(input.trustScore ?? 50),
         circularity_score: Number(input.circularityScore ?? 70),
         urgency_score: Number(input.urgencyScore ?? 50),
@@ -412,6 +447,37 @@ async function routes(req, res) {
       const { data, error } = await client.from('transactions').select('*').or(`donor_id.eq.${user.id},seeker_id.eq.${user.id}`).order('created_at', { ascending: false });
       if (error) throw error;
       return json(res, 200, { success: true, transactions: data || [] });
+    }
+
+    if (req.method === 'GET' && path.startsWith('/api/transactions/') && path.endsWith('/ratings')) {
+      const id = path.split('/')[3];
+      const { data: existing, error: existingError } = await client.from('transactions').select('id,donor_id,seeker_id').eq('id', id).maybeSingle();
+      if (existingError) throw existingError;
+      if (!existing) return json(res, 404, { success: false, message: 'Transaction not found.' });
+      if (existing.donor_id !== user.id && existing.seeker_id !== user.id) return json(res, 403, { success: false, message: 'Not authorized to view these ratings.' });
+      const { data, error } = await client.from('ratings').select('*').eq('transaction_id', id).order('created_at', { ascending: false });
+      if (error) throw error;
+      return json(res, 200, { success: true, ratings: data || [] });
+    }
+
+    if (req.method === 'POST' && path === '/api/ratings') {
+      const input = await body(req);
+      const transactionId = input.transactionId;
+      const toUser = input.toUser;
+      const score = Number(input.score);
+      if (!transactionId || !toUser || !Number.isFinite(score) || score < 1 || score > 5) {
+        return json(res, 400, { success: false, message: 'transactionId, toUser and a score between 1 and 5 are required.' });
+      }
+      const { data: tx, error: txError } = await client.from('transactions').select('*').eq('id', transactionId).maybeSingle();
+      if (txError) throw txError;
+      if (!tx) return json(res, 404, { success: false, message: 'Transaction not found.' });
+      if (tx.status !== 'COMPLETED') return json(res, 400, { success: false, message: 'Only completed transactions can be rated.' });
+      if (tx.donor_id !== user.id && tx.seeker_id !== user.id) return json(res, 403, { success: false, message: 'Not authorized to rate this transaction.' });
+      if (toUser !== tx.donor_id && toUser !== tx.seeker_id) return json(res, 400, { success: false, message: 'toUser must be the other transaction participant.' });
+      const { data, error } = await client.from('ratings').insert({ transaction_id: transactionId, from_user: user.id, to_user: toUser, score, comment: input.comment ? String(input.comment) : null }).select('*').single();
+      if (error) throw error;
+      await notify(client, toUser, 'SYSTEM', 'New RAW rating', `You received a ${score}-star rating for a completed exchange.`, '/profile');
+      return json(res, 201, { success: true, rating: data });
     }
 
     if (req.method === 'GET' && path === '/api/notifications') {

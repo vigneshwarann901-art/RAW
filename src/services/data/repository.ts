@@ -1,9 +1,19 @@
-import type { Match, Notification, Offer, Requirement, ResourceListing, Transaction } from '../../types';
+import type { Match, Notification, Offer, Rating, Requirement, ResourceListing, Transaction, User } from '../../types';
 import {
+  createApiListing,
+  createApiOffer,
+  createApiRating,
+  createApiRequirement,
+  getApiListings,
   getApiMatches,
   getApiNotifications,
+  getApiOffers,
+  getApiProfileById,
+  getApiRatingsForTransaction,
+  getApiRequirements,
   getApiTransactions,
   markApiNotificationRead,
+  updateApiOffer,
   updateApiTransaction,
 } from '../api';
 import { createListing as serviceCreateListing, getListings as serviceGetListings, updateListingStatus as serviceUpdateListingStatus } from '../listings';
@@ -16,13 +26,13 @@ const fail = <T>(error: unknown): RepositoryResult<T> => ({ data: null, error: e
 
 export async function createListing(input: {
   donorId: string; material: string; category: string; title: string; description: string; quantity: number; unit: string;
-  condition: string; price: number; location: string; availableUntil: string; mode: string; imageUrl?: string;
+  condition: string; price: number; location: string; availableUntil: string; mode: string; imageUrl?: string; images?: string[];
   lat?: number; lng?: number; trustScore?: number; circularityScore?: number; urgencyScore?: number; aiConfidence?: number;
 }): Promise<RepositoryResult<ResourceListing>> {
   const result = await createApiListing({
     donorId: input.donorId, material: input.material, category: input.category, title: input.title, description: input.description,
     quantity: input.quantity, unit: input.unit, condition: input.condition, price: input.price, location: input.location,
-    availableUntil: input.availableUntil, mode: input.mode, image: input.imageUrl, lat: input.lat, lng: input.lng,
+    availableUntil: input.availableUntil, mode: input.mode, image: input.imageUrl, images: input.images, lat: input.lat, lng: input.lng,
     trustScore: input.trustScore, circularityScore: input.circularityScore, urgencyScore: input.urgencyScore, aiConfidence: input.aiConfidence,
   });
   if (result.error || !result.data) return fail<ResourceListing>(result.error || 'Unable to create listing');
@@ -121,6 +131,26 @@ export async function markNotificationRead(id: string): Promise<RepositoryResult
   return ok(mapNotification(result.data.notification));
 }
 
+export async function getProfileById(id: string): Promise<RepositoryResult<User>> {
+  const result = await getApiProfileById(id);
+  if (result.error || !result.data) return fail<User>(result.error || 'Unable to load profile');
+  return ok(mapProfile(result.data.profile));
+}
+
+export async function createRating(input: {
+  transactionId: string; toUser: string; score: number; comment?: string;
+}): Promise<RepositoryResult<Rating>> {
+  const result = await createApiRating({ transactionId: input.transactionId, toUser: input.toUser, score: input.score, comment: input.comment });
+  if (result.error || !result.data) return fail<Rating>(result.error || 'Unable to submit rating');
+  return ok(mapRating(result.data.rating));
+}
+
+export async function listRatingsForTransaction(transactionId: string): Promise<RepositoryResult<Rating[]>> {
+  const result = await getApiRatingsForTransaction(transactionId);
+  if (result.error || !result.data) return fail<Rating[]>(result.error || 'Unable to load ratings');
+  return ok((result.data.ratings || []).map(mapRating));
+}
+
 function mapListing(row: Record<string, unknown>): ResourceListing {
   return {
     id: String(row.id), donorId: String(row.donor_id ?? row.donorId ?? ''), material: String(row.material), category: String(row.category ?? 'Other'),
@@ -128,6 +158,7 @@ function mapListing(row: Record<string, unknown>): ResourceListing {
     condition: row.condition as ResourceListing['condition'], price: row.price == null ? undefined : Number(row.price), location: String(row.location ?? ''),
     distanceKm: Number(row.distance_km ?? row.distanceKm ?? 0), availableUntil: String(row.available_until ?? row.availableUntil ?? ''),
     mode: row.mode as ResourceListing['mode'], status: row.status as ResourceListing['status'], image: String(row.image_url ?? row.image ?? ''),
+    images: Array.isArray(row.images) ? row.images.map(String) : undefined,
     trustScore: Number(row.trust_score ?? row.trustScore ?? 50), circularityScore: Number(row.circularity_score ?? row.circularityScore ?? 50),
     urgencyScore: Number(row.urgency_score ?? row.urgencyScore ?? 50), aiConfidence: row.ai_confidence == null ? undefined : Number(row.ai_confidence),
   };
@@ -176,5 +207,25 @@ function mapNotification(row: Record<string, unknown>): Notification {
   return {
     id: String(row.id), userId: String(row.user_id ?? row.userId ?? ''), type: row.type as Notification['type'], title: String(row.title ?? ''), message: String(row.message ?? ''),
     read: Boolean(row.read), createdAt: String(row.created_at ?? row.createdAt ?? new Date().toISOString()), link: row.link == null ? undefined : String(row.link),
+  };
+}
+
+function mapProfile(row: Record<string, unknown>): User {
+  return {
+    id: String(row.id), name: String(row.name ?? 'RAW Member'), email: String(row.email ?? ''), phone: String(row.phone ?? ''),
+    role: (row.role as User['role']) ?? 'DONOR', location: String(row.location ?? ''),
+    trustScore: Number(row.trust_score ?? row.trustScore ?? 50),
+    verifiedPhone: Boolean(row.verified_phone ?? row.verifiedPhone), verifiedEmail: Boolean(row.verified_email ?? row.verifiedEmail),
+    verifiedBusiness: Boolean(row.verified_business ?? row.verifiedBusiness),
+    successfulTransactions: Number(row.successful_transactions ?? row.successfulTransactions ?? 0),
+    responseRate: Number(row.response_rate ?? row.responseRate ?? 0),
+  };
+}
+
+function mapRating(row: Record<string, unknown>): Rating {
+  return {
+    id: String(row.id), transactionId: String(row.transaction_id ?? row.transactionId ?? ''), fromUser: String(row.from_user ?? row.fromUser ?? ''),
+    toUser: String(row.to_user ?? row.toUser ?? ''), score: Number(row.score ?? 0), comment: row.comment == null ? undefined : String(row.comment),
+    createdAt: String(row.created_at ?? row.createdAt ?? new Date().toISOString()),
   };
 }

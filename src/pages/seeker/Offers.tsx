@@ -1,13 +1,41 @@
 import { Bell, Package, Check, Clock, XCircle, AlertCircle } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import AppShell from '../../components/layout/AppShell';
 import Badge from '../../components/common/Badge';
 import { useRaw } from '../../store/RawStore';
-import { demoUsers } from '../../data/demo';
+import { useAuth } from '../../auth/AuthProvider';
+import { getProfileById } from '../../services/data/repository';
+import type { User } from '../../types';
 
 export default function SeekerOffers() {
   const { offers, listings, currentUser } = useRaw();
+  const { mode } = useAuth();
+  const [donors, setDonors] = useState<Record<string, User>>({});
 
   const seekerOffers = offers.filter((offer) => offer.seekerId === currentUser.id);
+
+  const donorIds = useMemo(() => {
+    const ids = new Set<string>();
+    seekerOffers.forEach((offer) => {
+      const listing = listings.find((l) => l.id === offer.listingId);
+      if (listing) ids.add(listing.donorId);
+    });
+    return Array.from(ids);
+  }, [seekerOffers, listings]);
+
+  useEffect(() => {
+    if (mode !== 'supabase' || !donorIds.length) return;
+    let active = true;
+    void Promise.all(donorIds.map((donorId) => getProfileById(donorId))).then((results) => {
+      if (!active) return;
+      setDonors((prev) => {
+        const next = { ...prev };
+        results.forEach((result, index) => { if (result.data) next[donorIds[index]] = result.data; });
+        return next;
+      });
+    });
+    return () => { active = false; };
+  }, [mode, donorIds]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -43,7 +71,7 @@ export default function SeekerOffers() {
           ) : (
             seekerOffers.map((offer) => {
               const listing = listings.find((l) => l.id === offer.listingId);
-              const donor = demoUsers.find((u) => u.id === listing?.donorId);
+              const donor = listing ? donors[listing.donorId] : undefined;
 
               return (
                 <div key={offer.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">

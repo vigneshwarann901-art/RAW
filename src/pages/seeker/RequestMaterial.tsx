@@ -1,34 +1,29 @@
 import { ArrowRight, MapPin, Package, ShieldCheck, User } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AppShell from '../../components/layout/AppShell';
 import { useRaw } from '../../store/RawStore';
-import { demoUsers } from '../../data/demo';
+import { useAuth } from '../../auth/AuthProvider';
+import { getProfileById } from '../../services/data/repository';
+import type { User as RawUser } from '../../types';
 
 export default function RequestMaterial() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { listings, addOffer } = useRaw();
+  const { mode } = useAuth();
   const [quantity, setQuantity] = useState('');
   const [message, setMessage] = useState('');
+  const [donor, setDonor] = useState<RawUser | null>(null);
 
   const listing = useMemo(() => listings.find((l) => l.id === id), [listings, id]);
-  const donor = useMemo(() => {
-    if (!listing) return null;
-    return demoUsers.find((u) => u.id === listing.donorId) || {
-      id: listing.donorId,
-      name: 'Verified Donor',
-      email: 'donor@raw.org',
-      phone: '+91 98765 00000',
-      role: 'DONOR' as const,
-      location: listing.location,
-      trustScore: listing.trustScore || 90,
-      verifiedPhone: true,
-      verifiedEmail: true,
-      successfulTransactions: 12,
-      responseRate: 95,
-    };
-  }, [listing]);
+
+  useEffect(() => {
+    if (mode !== 'supabase' || !listing) { setDonor(null); return; }
+    let active = true;
+    void getProfileById(listing.donorId).then((result) => { if (active) setDonor(result.data); });
+    return () => { active = false; };
+  }, [mode, listing?.donorId]);
 
   if (!listing) {
     return (

@@ -213,8 +213,8 @@ create trigger on_auth_user_created
 after insert on auth.users
 for each row execute procedure public.handle_new_user();
 
--- Optional image bucket for material photos. Create it in Supabase Storage if desired.
--- insert into storage.buckets (id, name, public) values ('raw-images', 'raw-images', false) on conflict do nothing;
+-- Image bucket for material photos: see the V10 section below for the actual
+-- bucket + storage RLS policies.
 
 -- Additional policies needed for offer updates and transaction creation during the MVP.
 drop policy if exists "offers_donor_update" on offers;
@@ -321,3 +321,56 @@ create policy "businesses_owner_insert" on businesses for insert to authenticate
 
 drop policy if exists "businesses_owner_update" on businesses;
 create policy "businesses_owner_update" on businesses for update to authenticated using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+
+-- V9 production backend integration.
+
+-- Multiple photos per listing (image_url remains the primary/thumbnail image).
+alter table listings add column if not exists images text[] not null default '{}';
+
+-- Ratings could already be read by participants but had no way to be written.
+-- A rating is only allowed once a transaction is COMPLETED, only by one of its two
+-- participants, and only about the other participant.
+drop policy if exists "ratings_participant_insert" on ratings;
+create policy "ratings_participant_insert" on ratings for insert to authenticated with check (
+  from_user = auth.uid()
+  and to_user <> auth.uid()
+  and exists (
+    select 1 from transactions t
+    where t.id = transaction_id
+      and t.status = 'COMPLETED'
+      and (t.donor_id = auth.uid() or t.seeker_id = auth.uid())
+      and (to_user = t.donor_id or to_user = t.seeker_id)
+  )
+);
+
+-- V10: Supabase Storage for listing photos.
+-- Public bucket so marketplace/browse pages can render images via a plain public URL
+-- with no signed-URL refresh logic; writes are still locked down by RLS below.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('raw-images', 'raw-images', true, 10485760, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update set
+  public = true,
+  file_size_limit = 10485760,
+  allowed_mime_types = array['image/jpeg','image/png','image/webp'];
+
+alter table storage.objects enable row level security;
+
+-- Each user may only write inside a folder named after their own auth uid,
+-- e.g. raw-images/<user_id>/<filename>. storage.foldername() splits the object
+-- path on '/', so index 1 is that top-level folder.
+drop policy if exists "raw_images_insert_own_folder" on storage.objects;
+create policy "raw_images_insert_own_folder" on storage.objects for insert to authenticated with check (
+  bucket_id = 'raw-images' and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+drop policy if exists "raw_images_update_own" on storage.objects;
+create policy "raw_images_update_own" on storage.objects for update to authenticated using (
+  bucket_id = 'raw-images' and (storage.foldername(name))[1] = auth.uid()::text
+) with check (
+  bucket_id = 'raw-images' and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+drop policy if exists "raw_images_delete_own" on storage.objects;
+create policy "raw_images_delete_own" on storage.objects for delete to authenticated using (
+  bucket_id = 'raw-images' and (storage.foldername(name))[1] = auth.uid()::text
+);

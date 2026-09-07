@@ -247,7 +247,7 @@ children:ReactNode
 const [session,setSession]=useState<Session|null>(null);
 
 
-const [user,setUser]=useState<User>(
+const [user,setUser]=useState<User | null>(
 ()=>readDemoUser()
 );
 
@@ -501,7 +501,7 @@ useMemo<AuthContextValue>(()=>({
 
 session,
 
-user,
+user: user ?? demoUsers[0],
 
 loading,
 
@@ -937,7 +937,7 @@ saveRole(role);
 
 
 const nextUser={
-...user,
+...(user ?? demoUsers[0]),
 role
 };
 

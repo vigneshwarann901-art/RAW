@@ -90,7 +90,7 @@ export function RawProvider({ children }: { children: ReactNode }) {
     void persistListing({
       donorId: currentUser.id, material: optimistic.material, category: optimistic.category, title: optimistic.title, description: optimistic.description,
       quantity: optimistic.quantity, unit: optimistic.unit, condition: optimistic.condition, price: optimistic.price ?? 0, location: optimistic.location,
-      availableUntil: optimistic.availableUntil, mode: optimistic.mode, imageUrl: optimistic.image, trustScore: optimistic.trustScore, circularityScore: optimistic.circularityScore,
+      availableUntil: optimistic.availableUntil, mode: optimistic.mode, imageUrl: optimistic.image, images: optimistic.images, trustScore: optimistic.trustScore, circularityScore: optimistic.circularityScore,
       urgencyScore: optimistic.urgencyScore, aiConfidence: optimistic.aiConfidence,
     }).then((result) => { if (result.data) setListings((value) => [result.data!, ...value.filter((x) => x.id !== optimistic.id)]); else void refresh(); }).catch(() => undefined);
     return optimistic;
