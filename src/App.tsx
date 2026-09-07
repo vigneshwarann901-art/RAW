@@ -19,6 +19,13 @@ import Profile from './pages/shared/Profile';
 import RequirementNew from './pages/seeker/RequirementNew';
 import Receipt from './pages/transactions/Receipt';
 import MyListings from './pages/donor/MyListings';
+import SeekerDashboard from './pages/seeker/Dashboard';
+import SeekerTransactions from './pages/seeker/Transactions';
+import RequestMaterial from './pages/seeker/RequestMaterial';
+import SeekerOffers from './pages/seeker/Offers';
+
+
+
 
 export default function App() {
   return (
@@ -31,7 +38,7 @@ export default function App() {
           <Route path="/auth/login" element={<Auth mode="login" />} />
           <Route path="/auth/register" element={<Auth mode="register" />} />
 
-          <Route path="/donor/dashboard" element={<RequireAuth><DonorDashboard /></RequireAuth>} />
+          <Route path="/donor/dashboard" element={<DonorDashboard />} />
           <Route path="/donor/listings" element={<RequireAuth><MyListings /></RequireAuth>} />
           <Route path="/donor/listings/new" element={<RequireAuth><ListRaw /></RequireAuth>} />
           <Route path="/donor/listings/:id" element={<RequireAuth><MyListings /></RequireAuth>} />
@@ -40,11 +47,21 @@ export default function App() {
           <Route path="/donor/impact" element={<RequireAuth><Impact /></RequireAuth>} />
           <Route path="/donor/receipts/:id" element={<RequireAuth><Receipt /></RequireAuth>} />
 
-          <Route path="/seeker/dashboard" element={<RequireAuth><Navigate to="/seeker/marketplace" replace /></RequireAuth>} />
+        <Route
+path="/seeker/dashboard"
+element={
+<RequireAuth>
+<SeekerDashboard/>
+</RequireAuth>
+}
+/>
           <Route path="/seeker/marketplace" element={<RequireAuth><Marketplace /></RequireAuth>} />
+          <Route path="/seeker/request/:id" element={<RequireAuth><RequestMaterial /></RequireAuth>} />
+          <Route path="/seeker/offers" element={<RequireAuth><SeekerOffers /></RequireAuth>} />
           <Route path="/seeker/requirements" element={<RequireAuth><Requirements /></RequireAuth>} />
           <Route path="/seeker/requirements/new" element={<RequireAuth><RequirementNew /></RequireAuth>} />
           <Route path="/seeker/matches" element={<RequireAuth><Matches /></RequireAuth>} />
+          <Route path="/seeker/transactions" element={<RequireAuth><SeekerTransactions /></RequireAuth>} />
 
           <Route path="/assistant" element={<RequireAuth><Assistant /></RequireAuth>} />
           <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />

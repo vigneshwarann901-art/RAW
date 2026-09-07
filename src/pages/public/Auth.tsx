@@ -1,168 +1,1893 @@
-import { ArrowRight, Check, Leaf, ShieldCheck, Sparkles, Users, Recycle, MapPin } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { useAuth } from '../../auth/AuthProvider';
+import {
+  ArrowRight,
+  Leaf,
+  ShieldCheck
+} from "lucide-react";
 
-export default function Auth({ mode }: { mode: 'login' | 'register' }) {
-  const register = mode === 'register';
-  const navigate = useNavigate();
-  const { signIn, signUp, signInWithGoogle } = useAuth();
-  const [role, setRole] = useState<'DONOR' | 'SEEKER'>('DONOR');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [businessName, setBusinessName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
-  const [busy, setBusy] = useState(false);
 
-  const submitGoogle = async () => {
-    setBusy(true);
-    setError('');
-    setMessage('');
-    const result = await signInWithGoogle(role);
-    setBusy(false);
-    if (result.error) setError(result.error);
-  };
+import {
+  Link,
+  useNavigate
+} from "react-router-dom";
 
-  const submit = async () => {
-    setBusy(true);
-    setError('');
-    setMessage('');
-    const result = register
-      ? await signUp(name || 'RAW Member', email, password || 'DemoPassword123!', role, phone, businessName)
-      : await signIn(email, password || 'DemoPassword123!', role);
-    setBusy(false);
-    if (result.error) {
-      setError(result.error);
-      return;
-    }
-    if (result.message) {
-      setMessage(result.message);
-      return;
-    }
-    navigate(role === 'DONOR' ? '/donor/dashboard' : '/seeker/marketplace');
-  };
 
-  return (
-    <div className="min-h-screen bg-slate-950 p-0 sm:p-4">
-      <div className="mx-auto grid min-h-screen max-w-6xl overflow-hidden border border-white/10 bg-white sm:min-h-[calc(100vh-2rem)] sm:rounded-3xl lg:grid-cols-[0.9fr_1.1fr]">
-        <aside className="relative hidden overflow-hidden bg-slate-950 text-white lg:flex lg:flex-col">
-          <img src="/raw-materials-dark.svg" alt="Reusable and recoverable raw materials" className="absolute inset-0 h-full w-full object-cover object-[66%]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/88 via-slate-950/55 to-slate-950/96" />
-          <div className="relative z-10 flex h-full flex-col p-8 xl:p-10">
-            <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-white text-slate-950"><Leaf className="h-5 w-5" /></div>
-              <div><div className="text-xl font-black">RAW</div><div className="text-[10px] uppercase tracking-[0.22em] text-slate-400">reusable network</div></div>
-            </div>
-            <div className="mt-14 max-w-md">
-              <p className="text-sm font-semibold text-teal-300">Reusable & Recoverable Network</p>
-              <h1 className="mt-4 text-5xl font-black leading-[1.05] tracking-tight">Give useful material another life.</h1>
-              <p className="mt-5 text-base leading-7 text-slate-300">Connect surplus with nearby demand, build trusted exchanges, and keep valuable resources in circulation.</p>
-            </div>
-            <div className="mt-8 grid max-w-sm gap-3 sm:grid-cols-2">
-              {[
-                { icon: Sparkles, text: 'Smart local matching' },
-                { icon: Recycle, text: 'Circularity-aware discovery' },
-                { icon: Users, text: 'Trusted participants' },
-                { icon: MapPin, text: 'Privacy-aware locations' },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-xs text-slate-200 backdrop-blur-sm">
-                  <Icon className="h-4 w-4 shrink-0 text-teal-300" />
-                  <span>{text}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-auto grid grid-cols-3 gap-3 pt-8">
-              {[
-                ['1.24t', 'recovered'],
-                ['57', 'reuse cycles'],
-                ['36', 'exchanges'],
-              ].map(([value, label]) => (
-                <div key={label} className="rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm">
-                  <div className="text-lg font-black text-white">{value}</div>
-                  <div className="mt-1 text-[11px] text-slate-400">{label}</div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 flex items-center gap-2 text-[11px] text-slate-400"><ShieldCheck className="h-4 w-4" /> Privacy-aware location sharing</div>
-          </div>
-        </aside>
+import {
+  useState
+} from "react";
 
-        <main className="p-5 sm:p-8 lg:p-10">
-          <div className="mx-auto max-w-lg">
-            <div className="flex items-center gap-3 lg:hidden">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-slate-950 text-white"><Leaf className="h-5 w-5" /></div>
-              <div><div className="text-xl font-black">RAW</div><div className="text-[10px] uppercase tracking-[0.22em] text-slate-400">reusable network</div></div>
-            </div>
 
-            <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 lg:hidden">
-              <div className="relative h-36">
-                <img src="/raw-materials-light.svg" alt="Raw material categories" className="h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
-                <div className="absolute bottom-3 left-3 right-3 text-xs font-semibold text-white">Reuse locally. Keep value in circulation.</div>
-              </div>
-            </div>
+import {
+  useAuth
+} from "../../auth/AuthProvider";
 
-            <div className="mt-7 lg:mt-0">
-              <p className="text-sm font-semibold text-teal-700">{register ? 'Create your RAW account' : 'Welcome back'}</p>
-              <h2 className="mt-2 text-3xl font-black tracking-tight">{register ? 'Join the network' : 'Sign in to RAW'}</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{register ? 'Choose how you participate in the circular economy.' : 'Manage surplus, requirements, offers and transactions.'}</p>
 
-              {register && (
-                <div className="mt-6 grid grid-cols-2 gap-2">
-                  {[
-                    ['DONOR', 'I have RAW', 'List surplus material'],
-                    ['SEEKER', 'I need RAW', 'Find or request material'],
-                  ].map(([value, title, copy]) => (
-                    <button key={value} type="button" onClick={() => setRole(value as 'DONOR' | 'SEEKER')} className={`rounded-xl border p-3 text-left text-sm font-semibold transition ${role === value ? 'border-teal-300 bg-teal-50 text-teal-800 shadow-sm' : 'border-slate-200 hover:border-slate-300'}`}>
-                      {title}<div className="mt-1 text-xs font-normal text-slate-500">{copy}</div>
-                    </button>
-                  ))}
-                </div>
-              )}
 
-              <div className="mt-6 space-y-3.5">
-                {register && <input value={name} onChange={e => setName(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-100" placeholder="Full name" />}
-                {register && role === 'SEEKER' && <input value={businessName} onChange={e => setBusinessName(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-100" placeholder="Business name (optional)" />}
-                {register && <input value={phone} onChange={e => setPhone(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-100" placeholder="Phone" />}
-                <input value={email} onChange={e => setEmail(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-100" placeholder="Email" />
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-100" placeholder="Password" />
-                <button disabled={busy} onClick={submit} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-3.5 font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60">
-                  {busy ? 'Working…' : register ? 'Create account' : 'Continue'} <ArrowRight className="h-4 w-4" />
-                </button>
-                <button type="button" onClick={submitGoogle} disabled={busy} className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-3.5 font-semibold transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"><Sparkles className="h-4 w-4" /> Continue with Google</button>
-                {error && <div className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
-                {message && <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{message}</div>}
-              </div>
+export default function Auth({
+  mode
+}:{
+  mode:"login"|"register";
+}){
 
-              <div className="mt-7 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-                <div className="grid items-stretch sm:grid-cols-[1.05fr_0.95fr]">
-                  <div className="relative overflow-hidden rounded-xl">
-                    <img src="/raw-materials-light.svg" alt="Raw material categories" className="h-36 w-full object-cover sm:h-full" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 to-transparent" />
-                    <div className="absolute bottom-3 left-3 inline-flex items-center gap-2 rounded-lg bg-white/90 px-2.5 py-1.5 text-[11px] font-semibold text-slate-800"><Recycle className="h-3.5 w-3.5 text-teal-700" /> Keep value moving</div>
-                  </div>
-                  <div className="p-4 sm:pl-5">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-teal-700">Built for circular exchange</p>
-                    <p className="mt-2 text-sm font-bold leading-5 text-slate-900">One trusted place for surplus, demand and reuse.</p>
-                    <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-slate-500">
-                      <span><strong className="text-slate-900">1.24t</strong><br />recovered</span>
-                      <span><strong className="text-slate-900">36</strong><br />exchanges</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <p className="mt-7 text-center text-sm text-slate-500">
-                {register ? 'Already have an account?' : 'New to RAW?'}{' '}
-                <Link to={register ? '/auth/login' : '/auth/register'} className="font-semibold text-teal-700 hover:text-teal-800">{register ? 'Log in' : 'Create one'}</Link>
-              </p>
-            </div>
-          </div>
-        </main>
-      </div>
-    </div>
-  );
+const register =
+mode==="register";
+
+
+const navigate =
+useNavigate();
+
+
+
+const {
+ signIn,
+ signUp,
+ updateRole
+}=useAuth();
+
+
+
+// ROLE
+
+const [role,setRole] =
+useState<"DONOR"|"SEEKER">("DONOR");
+
+
+
+// CATEGORY
+
+const [userType,setUserType] =
+useState("");
+
+
+
+// FORM DATA
+
+const [name,setName] =
+useState("");
+
+const [email,setEmail] =
+useState("");
+
+const [password,setPassword] =
+useState("");
+
+const [phone,setPhone] =
+useState("");
+
+const [businessName,setBusinessName] =
+useState("");
+
+const [gstNumber,setGstNumber] =
+useState("");
+
+const [address,setAddress] =
+useState("");
+
+
+
+// LOGIN METHOD
+
+const [loginMethod,setLoginMethod] =
+useState<"EMAIL"|"PHONE">("EMAIL");
+
+
+
+// OTP STATES
+
+const [otp,setOtp] =
+useState("");
+
+const [emailVerified,setEmailVerified] =
+useState(false);
+
+const [phoneVerified,setPhoneVerified] =
+useState(false);
+
+
+
+// STATUS
+
+const [error,setError] =
+useState("");
+
+const [message,setMessage] =
+useState("");
+
+const [busy,setBusy] =
+useState(false);
+
+
+
+
+
+
+const donorTypes = [
+
+"Household",
+
+"Industry",
+
+"Hotel / Restaurant",
+
+"Medical / Healthcare",
+
+"Office / Organization",
+
+"Retail Shop",
+
+"Construction",
+
+"Other"
+
+];
+
+
+
+const seekerTypes = [
+
+"Manufacturer",
+
+"Recycler",
+
+"Construction Company",
+
+"Organization",
+
+"Other"
+
+];
+
+
+
+
+
+
+const verifyEmail = ()=>{
+
+
+if(email.includes("@")){
+
+setEmailVerified(true);
+
+setMessage(
+"Email OTP verified"
+);
+
+}
+
+else{
+
+setError(
+"Enter valid email"
+);
+
+}
+
+};
+
+
+
+
+
+
+
+const verifyPhone = ()=>{
+
+
+if(phone.length>=10){
+
+setPhoneVerified(true);
+
+setMessage(
+"Mobile OTP verified"
+);
+
+}
+
+else{
+
+setError(
+"Enter valid mobile number"
+);
+
+}
+
+};
+
+
+
+
+
+
+
+const submit = async()=>{
+
+
+setBusy(true);
+
+setError("");
+
+
+
+if(register){
+
+
+const result =
+await signUp(
+name || "RAW User",
+email,
+password,
+role,
+phone,
+businessName
+);
+
+
+
+setBusy(false);
+
+
+
+if(result.error){
+
+setError(result.error);
+
+return;
+
+}
+
+
+
+navigate(
+
+role==="DONOR"
+
+?
+"/donor/dashboard"
+
+:
+"/seeker/dashboard"
+
+);
+
+
+
+return;
+
+
+}
+
+
+
+
+
+// LOGIN OTP CHECK
+
+
+if(loginMethod==="EMAIL" && !emailVerified){
+
+setBusy(false);
+
+setError(
+"Verify email OTP first"
+);
+
+return;
+
+}
+
+
+
+
+if(loginMethod==="PHONE" && !phoneVerified){
+
+setBusy(false);
+
+setError(
+"Verify phone OTP first"
+);
+
+return;
+
+}
+
+
+
+
+setBusy(false);
+
+
+// temporary frontend login
+
+const roleResult=await updateRole(role);
+
+if(roleResult.error){
+
+setError(roleResult.error);
+
+return;
+
+}
+
+// redirect based on selected role
+
+console.log("ROLE:", role);
+
+if(role === "DONOR"){
+
+  navigate("/donor/dashboard");
+
+}
+else{
+
+  navigate("/seeker/dashboard");
+
+}
+
+};
+
+
+
+
+
+return (
+
+<div className="
+min-h-screen
+bg-slate-950
+flex
+">
+
+
+<div className="
+w-full
+grid
+lg:grid-cols-2
+bg-white
+">
+
+
+
+{/* LEFT VIDEO */}
+
+
+<div className="
+hidden
+lg:flex
+relative
+overflow-hidden
+bg-black
+">
+
+
+<video
+
+autoPlay
+loop
+muted
+playsInline
+
+className="
+absolute
+inset-0
+w-full
+h-full
+object-cover
+"
+
+>
+
+<source
+
+src="/vedios/login-demo.mp4"
+
+type="video/mp4"
+
+/>
+
+
+</video>
+
+
+
+<div className="
+absolute
+inset-0
+bg-black/50
+"/>
+
+
+
+<div className="
+relative
+z-10
+p-12
+text-white
+flex
+flex-col
+justify-between
+h-full
+">
+
+
+<div className="
+flex
+items-center
+gap-3
+">
+
+
+<div className="
+bg-white
+text-black
+p-3
+rounded-xl
+">
+
+<Leaf/>
+
+</div>
+
+
+
+<div>
+
+<h1 className="
+text-3xl
+font-black
+">
+
+RAW
+
+</h1>
+
+
+<p className="
+text-sm
+text-gray-300
+">
+
+Reusable Asset Workflow
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div>
+
+<h2 className="
+text-5xl
+font-black
+">
+
+Give useful materials another life.
+
+</h2>
+
+
+
+<p className="
+mt-5
+text-lg
+text-gray-200
+">
+
+Connecting waste generators,
+collectors and recyclers.
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+{/* RIGHT SIDE */}
+
+<div className="
+flex
+items-start
+justify-center
+p-10
+bg-white
+overflow-y-auto
+">
+
+
+<div className="
+w-full
+max-w-xl
+py-10
+">
+
+
+
+
+
+<div className="mb-8">
+
+
+<p className="
+text-emerald-600
+font-bold
+">
+
+{
+
+register
+
+?
+
+"Create RAW Account"
+
+:
+
+"Welcome Back"
+
+}
+
+</p>
+
+
+
+
+<h2 className="
+text-4xl
+font-black
+text-slate-900
+mt-2
+">
+
+{
+
+register
+
+?
+
+"Join RAW"
+
+:
+
+"Login to RAW"
+
+}
+
+</h2>
+
+
+
+
+<p className="
+mt-3
+text-gray-500
+">
+
+{
+
+register
+
+?
+
+"Connect with the circular economy"
+
+:
+
+"Use OTP to access RAW"
+
+}
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* REGISTER ROLE */}
+
+{
+
+register &&
+
+<div className="
+grid
+grid-cols-2
+gap-4
+mb-6
+">
+
+
+<button
+
+onClick={()=>setRole("DONOR")}
+
+className={`
+
+p-5
+rounded-xl
+border
+text-left
+
+${
+role==="DONOR"
+
+?
+
+"border-emerald-500 bg-emerald-50"
+
+:
+
+"border-gray-200"
+
+}
+
+`}
+
+>
+
+
+<h3 className="
+font-bold
+text-lg
+">
+
+I Have RAW
+
+</h3>
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+I provide materials
+
+</p>
+
+
+</button>
+
+
+
+
+
+<button
+
+onClick={()=>setRole("SEEKER")}
+
+className={`
+
+p-5
+rounded-xl
+border
+text-left
+
+${
+role==="SEEKER"
+
+?
+
+"border-emerald-500 bg-emerald-50"
+
+:
+
+"border-gray-200"
+
+}
+
+`}
+
+>
+
+
+<h3 className="
+font-bold
+text-lg
+">
+
+I Need RAW
+
+</h3>
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+I need materials
+
+</p>
+
+
+</button>
+
+
+
+</div>
+
+}
+
+
+
+
+
+
+
+<div className="
+space-y-4
+">
+
+
+
+
+
+
+
+{/* REGISTER NAME */}
+
+{
+
+register &&
+
+<input
+
+value={name}
+
+onChange={
+e=>setName(e.target.value)
+}
+
+placeholder="Full Name"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+outline-none
+focus:border-emerald-500
+"
+
+/>
+
+}
+
+
+
+
+
+
+
+
+
+
+{/* USER TYPE */}
+
+{
+
+register &&
+
+<select
+
+value={userType}
+
+onChange={
+e=>setUserType(e.target.value)
+}
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+>
+
+
+<option value="">
+
+Select Account Type
+
+</option>
+
+
+
+{
+
+(role==="DONOR"
+?
+donorTypes
+:
+seekerTypes
+)
+
+.map(type=>(
+
+<option
+
+key={type}
+
+value={type}
+
+>
+
+{type}
+
+</option>
+
+))
+
+}
+
+
+
+</select>
+
+}
+
+
+
+
+
+
+
+
+
+
+{/* BUSINESS DETAILS */}
+
+{
+
+register &&
+
+(
+
+(role==="DONOR" &&
+userType!=="Household" &&
+userType!=="")
+||
+
+role==="SEEKER"
+
+)
+
+&&
+
+<>
+
+
+<input
+
+value={businessName}
+
+onChange={
+e=>setBusinessName(e.target.value)
+}
+
+placeholder="Business / Company Name"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+
+
+
+
+
+<input
+
+value={gstNumber}
+
+onChange={
+e=>setGstNumber(e.target.value)
+}
+
+placeholder="GST Number"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+
+</>
+
+}
+
+
+
+
+
+
+
+
+
+{/* ADDRESS */}
+
+{
+
+register &&
+
+<input
+
+value={address}
+
+onChange={
+e=>setAddress(e.target.value)
+}
+
+placeholder="Address"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+}
+
+
+
+
+
+
+
+
+{/* MOBILE */}
+
+{
+
+register &&
+
+<>
+
+
+<input
+
+value={phone}
+
+onChange={
+e=>setPhone(e.target.value)
+}
+
+placeholder="Mobile Number"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+
+
+
+
+<button
+
+type="button"
+
+onClick={verifyPhone}
+
+className="
+text-emerald-600
+font-bold
+text-sm
+"
+
+>
+
+{
+
+phoneVerified
+
+?
+
+"Mobile Verified ✓"
+
+:
+
+"Verify Mobile OTP"
+
+}
+
+</button>
+
+
+
+
+
+
+{
+
+!phoneVerified &&
+
+<input
+
+placeholder="Enter Mobile OTP"
+
+value={otp}
+
+onChange={
+e=>setOtp(e.target.value)
+}
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+}
+
+
+
+</>
+
+}
+{/* EMAIL FOR REGISTER */}
+
+{
+
+register &&
+
+<>
+
+
+<input
+
+value={email}
+
+onChange={
+e=>setEmail(e.target.value)
+}
+
+placeholder="Email Address"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+outline-none
+focus:border-emerald-500
+"
+
+/>
+
+
+
+
+<button
+
+type="button"
+
+onClick={verifyEmail}
+
+className="
+text-emerald-600
+font-bold
+text-sm
+"
+
+>
+
+{
+
+emailVerified
+
+?
+
+"Email Verified ✓"
+
+:
+
+"Verify Email OTP"
+
+}
+
+</button>
+
+
+
+
+
+{
+
+!emailVerified &&
+
+<input
+
+placeholder="Enter Email OTP"
+
+value={otp}
+
+onChange={
+e=>setOtp(e.target.value)
+}
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+}
+
+
+
+</>
+
+}
+
+
+
+
+
+
+
+
+{/* LOGIN FLOW */}
+
+{
+
+!register &&
+
+<>
+<div className="
+grid
+grid-cols-2
+gap-4
+mb-6
+">
+
+
+<button
+
+onClick={()=>setRole("DONOR")}
+
+className={`
+p-4
+rounded-xl
+border
+text-left
+
+${
+role==="DONOR"
+?
+"border-emerald-500 bg-emerald-50"
+:
+"border-gray-200"
+}
+
+`}
+
+>
+
+<h3 className="
+font-bold
+">
+
+RAW Donor
+
+</h3>
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+I provide materials
+
+</p>
+
+
+</button>
+
+
+
+
+
+<button
+
+onClick={()=>setRole("SEEKER")}
+
+className={`
+p-4
+rounded-xl
+border
+text-left
+
+${
+role==="SEEKER"
+?
+"border-emerald-500 bg-emerald-50"
+:
+"border-gray-200"
+}
+
+`}
+
+>
+
+<h3 className="
+font-bold
+">
+
+RAW Seeker
+
+</h3>
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+I need materials
+
+</p>
+
+
+</button>
+
+
+</div>
+
+<div className="
+grid
+grid-cols-2
+gap-3
+mb-6
+">
+
+
+<button
+
+onClick={()=>setLoginMethod("EMAIL")}
+
+className={`
+
+p-4
+rounded-xl
+border
+font-bold
+
+${
+loginMethod==="EMAIL"
+
+?
+
+"border-emerald-500 bg-emerald-50"
+
+:
+
+"border-gray-200"
+
+}
+
+`}
+
+>
+
+Email Login
+
+</button>
+
+
+
+
+
+<button
+
+onClick={()=>setLoginMethod("PHONE")}
+
+className={`
+
+p-4
+rounded-xl
+border
+font-bold
+
+${
+loginMethod==="PHONE"
+
+?
+
+"border-emerald-500 bg-emerald-50"
+
+:
+
+"border-gray-200"
+
+}
+
+`}
+
+>
+
+Phone Login
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* EMAIL LOGIN */}
+
+{
+
+loginMethod==="EMAIL"
+
+&&
+
+<>
+
+
+<input
+
+value={email}
+
+onChange={
+e=>setEmail(e.target.value)
+}
+
+placeholder="Registered Email"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+
+
+
+
+<button
+
+type="button"
+
+onClick={()=>{
+
+setEmailVerified(true);
+
+setMessage("Email OTP verified");
+
+}}
+
+className="
+text-emerald-600
+font-bold
+text-sm
+"
+
+>
+
+{
+
+emailVerified
+
+?
+
+"Email Verified ✓"
+
+:
+
+"Send Email OTP"
+
+}
+
+</button>
+
+
+
+
+
+
+{
+
+!emailVerified &&
+
+<input
+
+value={otp}
+
+onChange={
+e=>setOtp(e.target.value)
+}
+
+placeholder="Enter Email OTP"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+}
+
+
+
+</>
+
+}
+
+
+
+
+
+
+
+
+
+{/* PHONE LOGIN */}
+
+{
+
+loginMethod==="PHONE"
+
+&&
+
+<>
+
+
+<input
+
+value={phone}
+
+onChange={
+e=>setPhone(e.target.value)
+}
+
+placeholder="Registered Mobile Number"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+
+
+
+
+<button
+
+type="button"
+
+onClick={verifyPhone}
+
+className="
+text-emerald-600
+font-bold
+text-sm
+"
+
+>
+
+{
+
+phoneVerified
+
+?
+
+"Mobile Verified ✓"
+
+:
+
+"Send Mobile OTP"
+
+}
+
+</button>
+
+
+
+
+
+
+
+{
+
+!phoneVerified &&
+
+<input
+
+value={otp}
+
+onChange={
+e=>setOtp(e.target.value)
+}
+
+placeholder="Enter Mobile OTP"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+}
+
+
+
+</>
+
+}
+
+
+</>
+
+}
+
+
+
+
+
+
+
+{/* PASSWORD ONLY REGISTER */}
+
+{
+
+register &&
+
+<input
+
+type="password"
+
+value={password}
+
+onChange={
+e=>setPassword(e.target.value)
+}
+
+placeholder="Create Password"
+
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
+
+/>
+
+}
+
+
+
+<button
+
+disabled={busy}
+
+onClick={submit}
+
+className="
+w-full
+mt-5
+rounded-xl
+bg-slate-950
+text-white
+py-3.5
+font-bold
+flex
+items-center
+justify-center
+gap-2
+hover:bg-slate-800
+transition
+"
+
+>
+
+{
+
+busy
+
+?
+
+"Processing..."
+
+:
+
+register
+
+?
+
+"Create RAW Account"
+
+:
+
+"Login"
+
+}
+
+
+<ArrowRight size={18}/>
+
+
+</button>
+
+
+
+
+
+
+
+{/* ERROR MESSAGE */}
+
+{
+
+error &&
+
+<div className="
+mt-4
+rounded-xl
+bg-red-50
+border
+border-red-200
+text-red-700
+p-3
+text-sm
+">
+
+{error}
+
+</div>
+
+}
+
+
+
+
+
+
+
+{/* SUCCESS MESSAGE */}
+
+{
+
+message &&
+
+<div className="
+mt-4
+rounded-xl
+bg-emerald-50
+border
+border-emerald-200
+text-emerald-700
+p-3
+text-sm
+">
+
+{message}
+
+</div>
+
+}
+
+
+
+
+
+
+
+<div className="
+mt-8
+flex
+items-center
+gap-3
+text-sm
+text-gray-500
+">
+
+
+<ShieldCheck size={18}/>
+
+
+Secure RAW verification system
+
+
+</div>
+
+
+
+
+
+
+
+<p className="
+mt-8
+text-center
+text-sm
+text-gray-500
+">
+
+
+{
+
+register
+
+?
+
+"Already have an account?"
+
+:
+
+"New to RAW?"
+
+}
+
+
+{" "}
+
+
+
+<Link
+
+to={
+
+register
+
+?
+
+"/auth/login"
+
+:
+
+"/auth/register"
+
+}
+
+className="
+font-bold
+text-emerald-600
+"
+
+>
+
+
+{
+
+register
+
+?
+
+"Login"
+
+:
+
+"Create one"
+
+}
+
+
+</Link>
+
+
+
+</p>
+
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+);
+
 }

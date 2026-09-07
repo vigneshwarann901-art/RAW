@@ -37,6 +37,20 @@ export const demoListings: ResourceListing[] = [
     image: '/material-cardboard.svg',
     trustScore: 94, circularityScore: 89, urgencyScore: 65,
   },
+  {
+    id: 'r4', donorId: 'u2', material: 'Aluminium Sheets', category: 'Metal', title: 'Reusable Aluminium Sheet Stack',
+    description: 'Assorted aluminium sheets from fabrication surplus, suitable for repair or repurposing.', quantity: 45, unit: 'kg', condition: 'GOOD', price: 210,
+    location: 'Ambattur, Chennai', distanceKm: 9.4, availableUntil: '2026-09-08T18:00:00', mode: 'SELL', status: 'ACTIVE',
+    image: '/raw-materials-light.svg',
+    trustScore: 96, circularityScore: 91, urgencyScore: 58,
+  },
+  {
+    id: 'r5', donorId: 'u1', material: 'Electronic Components', category: 'Electronics', title: 'Sorted Electronic Components',
+    description: 'Mixed working electronic parts including connectors, boards and small modules.', quantity: 120, unit: 'units', condition: 'MIXED', price: 35,
+    location: 'T Nagar, Chennai', distanceKm: 5.7, availableUntil: '2026-09-07T15:00:00', mode: 'SELL', status: 'ACTIVE',
+    image: '/material-electronics.svg',
+    trustScore: 94, circularityScore: 84, urgencyScore: 70,
+  },
 ];
 
 export const demoRequirements: Requirement[] = [

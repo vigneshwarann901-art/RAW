@@ -1,18 +1,14 @@
 import type { Match, Notification, Offer, Requirement, ResourceListing, Transaction } from '../../types';
 import {
-  createApiListing,
-  createApiOffer,
-  createApiRequirement,
-  getApiListings,
   getApiMatches,
   getApiNotifications,
-  getApiOffers,
-  getApiRequirements,
   getApiTransactions,
   markApiNotificationRead,
-  updateApiOffer,
   updateApiTransaction,
 } from '../api';
+import { createListing as serviceCreateListing, getListings as serviceGetListings, updateListingStatus as serviceUpdateListingStatus } from '../listings';
+import { createRequirement as serviceCreateRequirement, getRequirements as serviceGetRequirements, updateRequirementStatus as serviceUpdateRequirementStatus } from '../requirements';
+import { createOffer as serviceCreateOffer, getOffersForSeeker as serviceGetOffersForSeeker, getOffersForDonor as serviceGetOffersForDonor, updateOfferStatus as serviceUpdateOfferStatus } from '../offers';
 
 export type RepositoryResult<T> = { data: T | null; error: string | null };
 const ok = <T>(data: T): RepositoryResult<T> => ({ data, error: null });

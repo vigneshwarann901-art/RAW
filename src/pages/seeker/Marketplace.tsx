@@ -28,8 +28,8 @@ export default function Marketplace() {
       <div className="flex flex-col gap-6">
         <div>
           <p className="text-sm font-semibold text-teal-700">Marketplace</p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight">Find RAW near you</h1>
-          <p className="mt-2 text-sm text-slate-500">Search reusable and recoverable materials from verified participants.</p>
+          <h1 className="mt-1 text-3xl font-black tracking-tight">Find Available Materials</h1>
+          <p className="mt-2 text-sm text-slate-500">Search reusable materials posted by verified donors.</p>
         </div>
 
         <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 lg:flex-row">
